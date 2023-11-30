@@ -46,7 +46,7 @@ module tb;
     always begin
         #1 clock = ~clock;
         counter = counter + 1;
-        if(counter == 997) begin
+        if(counter == 999999) begin
             $display("%d, %d", an, seg);
             counter = 0;
         end
