@@ -54,7 +54,7 @@ module runner(
     );*/
     always @ (posedge clk) begin
         counter <= counter + 1;
-        if(counter == 100) begin
+        if(counter == 100000000) begin
             counter <= 0;
             $display("%b, %b,", an, seg);
         end
