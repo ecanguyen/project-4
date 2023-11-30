@@ -87,7 +87,8 @@ module newvga
     reg  [3:0] tempan;
     reg [3:0] displaycounter = 0;
     reg [31:0] rngMod = 10000019;
-    reg [63:0] rngSeed = 123314;
+    reg [50:0] rngSeed = 123314;
+    reg [7:0] chance [0:3];
     
     integer i = 0;
     integer a = 0;
@@ -102,6 +103,10 @@ module newvga
             number[7] = 7'b0001111;
             number[8] = 7'b0000000;
             number[9] = 7'b0001100;
+            chance[0] = 1;
+            chance[1] = 1;
+            chance[2] = 1;
+            chance[3] = 1;
             //? right top, right bottom, ? ? ?  top
     end
 	// infer registers
@@ -159,13 +164,18 @@ module newvga
                rngSeed = rngSeed * 6373397;
                rngSeed = rngSeed % rngMod;
                $display("rng value: %b, %b", rngSeed, rngSeed%137);
-               if(mole[i]==1 && rngSeed%137 > 18) begin
-                   $display("turn mole %d off", i);
-                   mole[i] = 0;
-                   if(score > 0) begin
-                       score = score - 1;
+               if(mole[i]==1) begin
+                   if(rngSeed%137 < chance[i]) begin
+                       $display("turn mole %d off", i);
+                       mole[i] = 0;
+                       if(score > 0) begin
+                           score = score - 1;
+                       end
+                       chance[i] = 1;
+                   end else begin
+                       chance[i] = chance[i]+1;
                    end
-               end else if(mole[i] == 0 && rngSeed%137 == 0) begin
+               end else if(mole[i] == 0 && rngSeed%137 < 2) begin
                    $display("turn mole %d on", i);
                    mole[i] = 1;
                end
