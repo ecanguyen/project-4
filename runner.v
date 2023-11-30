@@ -52,15 +52,15 @@ module runner(
         .red(vgaRed), .green(vgaGreen), .blue(vgaBlue),
         .an(tmpAn), .seg(tmpSeg)
     );*/
-    always @ (posedge clk) begin
-        counter <= counter + 1;
-        if(counter == 100000000) begin
-            counter <= 0;
-            $display("%b, %b,", an, seg);
-        end
-        //$display("TMP an, seg, %b, %b", tmpAn, tmpSeg);
-        //$display("an, seg, %b, %b", an, seg);
-    end
+//    always @ (posedge clk) begin
+//        counter <= counter + 1;
+//        if(counter == 100) begin
+//            counter <= 0;
+//            $display("%b, %b,", an, seg);
+//        end
+//        //$display("TMP an, seg, %b, %b", tmpAn, tmpSeg);
+//        //$display("an, seg, %b, %b", an, seg);
+//    end
     newvga newvga(
         .clk(clk), .reset(0),
         .sw1(dbsw[3]), .sw2(dbsw[2]),.sw3(dbsw[1]),.sw4(dbsw[0]),
