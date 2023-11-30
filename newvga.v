@@ -90,20 +90,21 @@ module newvga
     integer i = 0;
     integer a = 0;
     initial begin
-            number[0] = 7'b0000001;
-            number[1] = 7'b1001111;
-            number[2] = 7'b0010010;
-            number[3] = 7'b0000110;
-            number[4] = 7'b1001100;
-            number[5] = 7'b0100100;
-            number[6] = 7'b0100000;
-            number[7] = 7'b0001111;
-            number[8] = 7'b0000000;
-            number[9] = 7'b0001100;
+        number[0] = 7'b0000001;
+        number[1] = 7'b1001111;
+        number[2] = 7'b0010010;
+        number[3] = 7'b0000110;
+        number[4] = 7'b1001100;
+        number[5] = 7'b0100100;
+        number[6] = 7'b0100000;
+        number[7] = 7'b0001111;
+        number[8] = 7'b0000000;
+        number[9] = 7'b0001100;
     end
 	// infer registers
 
 	always @(posedge clk, posedge reset) begin
+	    $display("score is: %d", score);
 	    tenScore <= number[score/10];
         oneScore <= number[score%10];
         if(displaycounter == 0) begin
@@ -120,34 +121,38 @@ module newvga
         // reset condition
         counter <= counter + 1;
         if(sw1 == 1) begin
+        $display("switch 1 is on");
            if(mole[0] == 1) begin
                mole[0] = 0;
                score = score + 1;
            end
         end
         if(sw2 == 1) begin
+        $display("switch 2 is on");
            if(mole[1] == 1) begin
                mole[1] = 0;
                score = score + 1;
            end
         end
         if(sw3 == 1) begin
+        $display("switch 3 is on");
            if(mole[2] == 1) begin
                mole[2] = 0;
                score = score + 1;
            end
         end
         if(sw4 == 1) begin
+        $display("switch 4 is on");
            if(mole[3] == 1) begin
                mole[3] = 0;
                score = score + 1;
            end
         end
-        if(counter % 100 == 0) begin
-            $display("%b, %b, %b, %b", an, seg, mole, score);
+        if(counter % 10000000 == 0) begin
+            $display("UPDATE: %d, %d, %b, score: %d", an, seg, mole, score);
         end
-        if(counter == 1000) begin 
-           $display("UPDATE: %b, %b, %b, %b", an, seg, mole, score);
+        if(counter == 10000000) begin 
+           $display("UPDATE: %d, %d, %b, score: %d", an, seg, mole, score);
            counter <= 0;
            for(i = 0; i < 4; i=i+1) begin
                a = $urandom%5;
@@ -157,6 +162,7 @@ module newvga
                        score = score - 1;
                    end
                end else if(mole[i] == 0 && a == 0) begin
+               $display("SETTING mole %d to 1", i);
                    mole[i] = 1;
                end
            end
@@ -179,7 +185,7 @@ module newvga
 	// next-state logic of horizontal vertical sync counters
 	always @*
 		begin
-		$display("v/h count, %b, %b", h_count_next, v_count_next);
+		$display("v/h count, %d, %d", h_count_next, v_count_next);
 		h_count_next = pixel_tick ? 
 		               h_count_reg == H_MAX ? 0 : h_count_reg + 1
 			       : h_count_reg;
@@ -205,7 +211,7 @@ module newvga
 		begin
 			// first check if we're within vertical active video range
 			$display("always begin");
-			$display("v/h reg %b, %b", v_count_reg, h_count_reg);
+			$display("v/h reg %d, %d. V_DISPLAY: %d, H_DISPLAY: %d", v_count_reg, h_count_reg, V_DISPLAY, H_DISPLAY);
 			if (v_count_reg >= 0 && v_count_reg < V_DISPLAY) begin
 			    $display("within v_display");
 			    if (h_count_reg >= 0 && h_count_reg < H_DISPLAY) begin
