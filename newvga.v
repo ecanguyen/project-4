@@ -21,6 +21,7 @@
 module newvga
 
 	(
+        input [7:0] seconds,
 		input wire clk, reset,
 		input sw1,
         input sw2,
@@ -90,6 +91,9 @@ module newvga
     reg [50:0] rngSeed = 123314;
     reg [7:0] chance [0:3];
     
+    reg [6:0] tempTensSeconds;
+    reg [6:0] tempOnesSeconds;
+    
     integer i = 0;
     integer a = 0;
     initial begin
@@ -112,18 +116,47 @@ module newvga
 	// infer registers
 
 	always @(posedge clk, posedge reset) begin
+	
 	    if(counter % 10000 == 0) begin
+	    
+           tempOnesSeconds <= number[seconds%10];
+           tempTensSeconds <= number[seconds/10];
+	    
             tenScore <= number[score/10];
             oneScore <= number[score%10];
             if(displaycounter == 0) begin
                 tempan <= 4'b0111; //0111
                 tempseg <= tenScore;
+//                if(reset == 1) begin
+//                    tempseg <= 7'b1111111;
+//                    score <= 0;
+//                end
                 displaycounter <= 1;
             end else if(displaycounter == 1) begin
                 tempseg <= oneScore;
                 tempan <= 4'b1011; //1011
-                displaycounter <= 0;
-            end 
+//                if(reset == 1) begin
+//                    tempseg <= 7'b1111111;
+//                    score <= 0;
+//                end
+                displaycounter <= 2;
+            end else if(displaycounter == 2) begin
+                    tempseg <= tempTensSeconds;
+                    tempan <= 4'b1101; //1011
+//                    if(reset == 1) begin
+//                        tempseg <= 7'b1111111;
+//                        score <= 0;
+//                    end
+                    displaycounter <= 3;
+            end else if(displaycounter == 3) begin
+                     tempseg <= tempOnesSeconds;
+                    tempan <= 4'b1110; //1011
+//                    if(reset == 1) begin
+//                        tempseg <= 7'b1111111;
+//                        score <= 0;
+//                    end
+                    displaycounter <= 0;    
+            end
             an <= tempan;
             seg <= tempseg;
         end
@@ -187,6 +220,7 @@ module newvga
                     h_count_reg <= 0;
                     vsync_reg   <= 0;
                     hsync_reg   <= 0;
+                    score <= 0;
 		    end
 		else
 		    begin
@@ -228,7 +262,7 @@ module newvga
 //			if(counter % 100 == 0) begin
 //			    $display("v/h reg %b, %b", v_count_reg, h_count_reg);
 //			end
-			if (v_count_reg >= 0 && v_count_reg < V_DISPLAY) begin
+			if (v_count_reg >= 0 && v_count_reg < V_DISPLAY) begin 
 			    //$display("within v_display");
 			    if (h_count_reg >= 0 && h_count_reg < H_DISPLAY) begin
 			        //$display("within h_display");
