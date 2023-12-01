@@ -38,12 +38,20 @@ module runner(
     wire tmph;
     wire tmpv;    
     wire [3:0] dbsw;
+    wire rst_state;
+    wire [7:0] seconds;
+    wire Hz1;
     
     debouncer debouncer1(.clk(clk), .button(sw[0]), .button_res(dbsw[0]));
     debouncer debouncer2(.clk(clk), .button(sw[1]), .button_res(dbsw[1]));
     debouncer debouncer3(.clk(clk), .button(sw[2]), .button_res(dbsw[2]));
     debouncer debouncer4(.clk(clk), .button(sw[3]), .button_res(dbsw[3]));
-    reg [10:0] counter = 0;
+    debouncer debouncer5(.clk(clk), .button(reset), .button_res(rst_state));
+    
+    ourClk ourClk(.clk(clk),.Hz1(Hz1));
+    counter counter(.clk(clk), .clk1Hz(Hz1), .rst(rst_state), .seconds(seconds));
+    
+//    reg [10:0] counter = 0;
     /*
     vga vga(
         .dclk(clk), .clr(0), 
@@ -62,7 +70,8 @@ module runner(
 //        //$display("an, seg, %b, %b", an, seg);
 //    end
     newvga newvga(
-        .clk(clk), .reset(0),
+        .seconds(seconds),
+        .clk(clk), .reset(rst_state),
         .sw1(dbsw[3]), .sw2(dbsw[2]),.sw3(dbsw[1]),.sw4(dbsw[0]),
         .Hsync(tmph), .Vsync(tmpv),
         .vgaRed(vgaRed), .vgaGreen(vgaGreen), .vgaBlue(vgaBlue),
