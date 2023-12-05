@@ -282,25 +282,49 @@ module newvga
 			        //$display("within h_display");
 			        if (v_count_reg >= 40 && v_count_reg < 200) begin
                        if (h_count_reg >= 40 && h_count_reg < 280)begin 
-                           if(mole[0] == 1'b1) begin
-                               vgaRed = 4'b0000;
-                               vgaGreen = 4'b1111;
-                               vgaBlue = 4'b0000;
+                           if(scoreZero == 0) begin
+                               if(mole[0] == 1'b1) begin
+                                   vgaRed = 4'b0000;
+                                   vgaGreen = 4'b1111;
+                                   vgaBlue = 4'b0000;
+                               end else begin
+                                   vgaRed = 4'b1111;
+                                   vgaGreen = 4'b1100;
+                                   vgaBlue = 4'b1101;
+                               end
                            end else begin
-                               vgaRed = 4'b1111;
-                               vgaGreen = 4'b1100;
-                               vgaBlue = 4'b1101;
+                               if(displayon == 1) begin
+                                   vgaRed = 4'b1111;
+                                   vgaGreen = 4'b0000;
+                                   vgaBlue = 4'b0000;
+                               end else begin
+                                   vgaRed = 4'b1111;
+                                   vgaGreen = 4'b1100;
+                                   vgaBlue = 4'b1101;
+                               end
                            end
                        end else if (h_count_reg >= 360 && h_count_reg < 600)begin 
-                           if(mole[2] == 1'b1) begin
-                               vgaRed = 4'b0000;
-                               vgaGreen = 4'b1111;
-                               vgaBlue = 4'b0000;
+                           if(scoreZero == 0) begin
+                               if(mole[2] == 1'b1) begin
+                                   vgaRed = 4'b0000;
+                                   vgaGreen = 4'b1111;
+                                   vgaBlue = 4'b0000;
+                               end else begin
+                                   vgaRed = 4'b1111;
+                                   vgaGreen = 4'b1010;
+                                   vgaBlue = 4'b0000;
+                               end
                            end else begin
-                               vgaRed = 4'b1111;
-                               vgaGreen = 4'b1010;
-                               vgaBlue = 4'b0000;
-                           end
+                              if(displayon == 1) begin
+                                  vgaRed = 4'b1111;
+                                  vgaGreen = 4'b0000;
+                                  vgaBlue = 4'b0000;
+                              end else begin
+                                  vgaRed = 4'b1111;
+                                  vgaGreen = 4'b1010;
+                                  vgaBlue = 4'b0000;
+                              end
+                          end
                        end else begin
                            vgaRed = 0;
                            vgaGreen = 1111;
@@ -308,24 +332,48 @@ module newvga
                        end
                     end else if (v_count_reg >= 280 && v_count_reg < 440) begin
                        if (h_count_reg >= 40 && h_count_reg < 280)begin 
-                           if(mole[1] == 1'b1) begin
-                               vgaRed = 4'b0000;
-                               vgaGreen = 4'b1111;
-                               vgaBlue = 4'b0000;
+                           if(scoreZero == 0) begin
+                               if(mole[1] == 1'b1) begin
+                                   vgaRed = 4'b0000;
+                                   vgaGreen = 4'b1111;
+                                   vgaBlue = 4'b0000;
+                               end else begin
+                                   vgaRed = 4'b0000;
+                                   vgaGreen = 4'b0000;
+                                   vgaBlue = 4'b1111;
+                               end
                            end else begin
-                               vgaRed = 4'b0000;
-                               vgaGreen = 4'b0000;
-                               vgaBlue = 4'b1111;
-                           end
+                             if(displayon == 1) begin
+                                 vgaRed = 4'b1111;
+                                 vgaGreen = 4'b0000;
+                                 vgaBlue = 4'b0000;
+                             end else begin
+                                 vgaRed = 4'b0000;
+                                 vgaGreen = 4'b0000;
+                                 vgaBlue = 4'b1111;
+                             end
+                         end
                        end else if (h_count_reg >= 360 && h_count_reg < 600)begin 
-                          if(mole[3] == 1'b1) begin
-                              vgaRed = 4'b0000;
-                              vgaGreen = 4'b1110;
-                              vgaBlue = 4'b0000;
+                          if(scoreZero == 0) begin
+                              if(mole[3] == 1'b1) begin
+                                  vgaRed = 4'b0000;
+                                  vgaGreen = 4'b1110;
+                                  vgaBlue = 4'b0000;
+                              end else begin
+                                  vgaRed = 4'b1111;
+                                  vgaGreen = 4'b1111;
+                                  vgaBlue = 4'b0000;
+                              end
                           end else begin
-                              vgaRed = 4'b1111;
-                              vgaGreen = 4'b1111;
-                              vgaBlue = 4'b0000;
+                              if(displayon == 1) begin
+                                  vgaRed = 4'b1111;
+                                  vgaGreen = 4'b0000;
+                                  vgaBlue = 4'b0000;
+                              end else begin
+                                  vgaRed = 4'b1111;
+                                  vgaGreen = 4'b1111;
+                                  vgaBlue = 4'b0000;
+                              end
                           end
                       end else begin
                           vgaRed = 0;
