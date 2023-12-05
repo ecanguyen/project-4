@@ -31,7 +31,7 @@ module counter(
     
     );
     
-    reg [7:0] secCounter = 0;
+    reg [7:0] secCounter = 59;
     reg current_clk = 0;
     reg tmpscoreZero = 0;
 //    always @ (posedge pause) begin
@@ -54,11 +54,13 @@ module counter(
 	
 	if (rst) begin
 	   secCounter <= 59;
+	   tmpscoreZero <= 0;
 	end else begin
 
             if(clk1Hz) begin
+//                $display("secCounter: %d", secCounter
                 if (secCounter == 0) begin
-                    secCounter <= 59;
+                    secCounter <= 0;
                     tmpscoreZero <= 1;
                 end else begin
                     secCounter <= secCounter - 1;
