@@ -27,6 +27,7 @@ module newvga
         input sw2,
         input sw3,
         input sw4,
+        input scoreZero,
 		output wire Hsync, Vsync,
 		output reg [3:0] vgaRed,
 		output reg [3:0] vgaGreen,
@@ -90,6 +91,8 @@ module newvga
     reg [31:0] rngMod = 10000019;
     reg [50:0] rngSeed = 123314;
     reg [7:0] chance [0:3];
+    reg displayon = 1;
+    reg [31:0] counter2 = 0;
     
     reg [6:0] tempTensSeconds;
     reg [6:0] tempOnesSeconds;
@@ -116,7 +119,11 @@ module newvga
 	// infer registers
 
 	always @(posedge clk, posedge reset) begin
-	
+	    counter2 <= counter2 + 1;
+	    if(counter2 == 50000000) begin 
+	       counter2 <= 0;
+	       displayon <= ~displayon;
+	    end
 	    if(counter % 10000 == 0) begin
 	    
            tempOnesSeconds <= number[seconds%10];
@@ -139,8 +146,9 @@ module newvga
 //                    tempseg <= 7'b1111111;
 //                    score <= 0;
 //                end
-                displaycounter <= 2;
+                displaycounter <= 2;           
             end else if(displaycounter == 2) begin
+                    
                     tempseg <= tempTensSeconds;
                     tempan <= 4'b1101; //1011
 //                    if(reset == 1) begin
@@ -156,9 +164,15 @@ module newvga
 //                        score <= 0;
 //                    end
                     displaycounter <= 0;    
-            end
+            end 
             an <= tempan;
-            seg <= tempseg;
+            if(scoreZero == 1 && displayon == 0) begin
+                tempseg <= 7'b1111111;
+            end else if(scoreZero == 1 && (displaycounter == 2 || displaycounter == 3)) begin
+                tempseg <= number[0];
+            end else
+                seg <= tempseg;
+            
         end
         // reset condition
         counter <= counter + 1;
@@ -266,95 +280,69 @@ module newvga
 			    //$display("within v_display");
 			    if (h_count_reg >= 0 && h_count_reg < H_DISPLAY) begin
 			        //$display("within h_display");
-                    if (v_count_reg >= 0 && v_count_reg < 240) begin
-                       if (h_count_reg >= 0 && h_count_reg < 320)begin 
+			        if (v_count_reg >= 40 && v_count_reg < 200) begin
+                       if (h_count_reg >= 40 && h_count_reg < 280)begin 
                            if(mole[0] == 1'b1) begin
-                               //$display("mole 0 is 1");
-//                               if(counter % 100 == 0) begin
-//                                   $display("mole 0 is 1");
-//                               end
                                vgaRed = 4'b0000;
-                               vgaGreen = 4'b0111;
+                               vgaGreen = 4'b1111;
                                vgaBlue = 4'b0000;
                            end else begin
-//                               if(counter % 100 == 0) begin
-//                                   $display("mole 0 is 0");
-//                               end
-                               //$display("mole 0 is 0");
-                               vgaRed = 4'b0111;
-                               vgaGreen = 4'b0000;
-                               vgaBlue = 4'b0000;
+                               vgaRed = 4'b1111;
+                               vgaGreen = 4'b1100;
+                               vgaBlue = 4'b1101;
                            end
-                       end else if (h_count_reg >= 320 && h_count_reg < 640)begin 
+                       end else if (h_count_reg >= 360 && h_count_reg < 600)begin 
                            if(mole[2] == 1'b1) begin
-                               //$display("mole 2 is 1");
-//                               if(counter % 100 == 0) begin
-//                                   $display("mole 2 is 1");
-//                               end
                                vgaRed = 4'b0000;
-                               vgaGreen = 4'b1101;
+                               vgaGreen = 4'b1111;
                                vgaBlue = 4'b0000;
                            end else begin
-                               //$display("mole 2 is 0");
-//                              if(counter % 100 == 0) begin
-//                                  $display("mole 2 is 0");
-//                              end
-                               vgaRed = 4'b1101;
-                               vgaGreen = 4'b0000;
+                               vgaRed = 4'b1111;
+                               vgaGreen = 4'b1010;
                                vgaBlue = 4'b0000;
                            end
+                       end else begin
+                           vgaRed = 0;
+                           vgaGreen = 1111;
+                           vgaBlue = 1111;
                        end
-                    end else if (v_count_reg >= 240 && v_count_reg < 480) begin
-                       if (h_count_reg >= 0 && h_count_reg < 320)begin 
+                    end else if (v_count_reg >= 280 && v_count_reg < 440) begin
+                       if (h_count_reg >= 40 && h_count_reg < 280)begin 
                            if(mole[1] == 1'b1) begin
-                               //$display("mole 1 is 1");
-//                               if(counter % 100 == 0) begin
-//                                   $display("mole 1 is 1");
-//                               end
                                vgaRed = 4'b0000;
-                               vgaGreen = 4'b1011;
+                               vgaGreen = 4'b1111;
                                vgaBlue = 4'b0000;
                            end else begin
-                               //$display("mole 1 is 0");
-//                               if(counter % 100 == 0) begin
-//                                   $display("mole 1 is 0");
-//                               end
-                               vgaRed = 4'b1011;
+                               vgaRed = 4'b0000;
                                vgaGreen = 4'b0000;
-                               vgaBlue = 4'b0000;
+                               vgaBlue = 4'b1111;
                            end
-                       end else if (h_count_reg >= 320 && h_count_reg < 640)begin 
+                       end else if (h_count_reg >= 360 && h_count_reg < 600)begin 
                           if(mole[3] == 1'b1) begin
-                              //$display("mole 3 is 1
-//                              if(counter % 100 == 0) begin
-//                                  $display("mole 3 is 1");
-//                              end
                               vgaRed = 4'b0000;
                               vgaGreen = 4'b1110;
                               vgaBlue = 4'b0000;
                           end else begin
-                              //$display("mole 3 is 0");
-//                             if(counter % 100 == 0) begin
-//                                 $display("mole 3 is 0");
-//                             end
-                              vgaRed = 4'b1110;
-                              vgaGreen = 4'b0000;
+                              vgaRed = 4'b1111;
+                              vgaGreen = 4'b1111;
                               vgaBlue = 4'b0000;
                           end
+                      end else begin
+                          vgaRed = 0;
+                          vgaGreen = 1111;
+                          vgaBlue = 1111;
                       end
                     end else begin
                         vgaRed = 0;
-                        vgaGreen = 0;
-                        vgaBlue = 0;
+                        vgaGreen = 1111;
+                        vgaBlue = 1111;
                     end
-                end
-                else begin
+                end else begin
                     vgaRed = 0;
                     vgaGreen = 0;
                     vgaBlue = 0;
                 end
-            end
-            else begin
+            end else begin
                 vgaRed = 0;
                 vgaGreen = 0;
                 vgaBlue = 0;
