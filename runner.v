@@ -41,6 +41,7 @@ module runner(
     wire rst_state;
     wire [7:0] seconds;
     wire Hz1;
+    wire scoreZero;
     
     debouncer debouncer1(.clk(clk), .button(sw[0]), .button_res(dbsw[0]));
     debouncer debouncer2(.clk(clk), .button(sw[1]), .button_res(dbsw[1]));
@@ -49,7 +50,7 @@ module runner(
     debouncer debouncer5(.clk(clk), .button(reset), .button_res(rst_state));
     
     ourClk ourClk(.clk(clk),.Hz1(Hz1));
-    counter counter(.clk(clk), .clk1Hz(Hz1), .rst(rst_state), .seconds(seconds));
+    counter counter(.clk(clk), .clk1Hz(Hz1), .rst(rst_state), .seconds(seconds), .scoreZero(scoreZero));
     
 //    reg [10:0] counter = 0;
     /*
@@ -71,6 +72,7 @@ module runner(
 //    end
     newvga newvga(
         .seconds(seconds),
+        .scoreZero(scoreZero),
         .clk(clk), .reset(rst_state),
         .sw1(dbsw[3]), .sw2(dbsw[2]),.sw3(dbsw[1]),.sw4(dbsw[0]),
         .Hsync(tmph), .Vsync(tmpv),
