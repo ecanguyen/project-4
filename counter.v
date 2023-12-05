@@ -24,14 +24,16 @@ module counter(
     input clk1Hz,
     input clk,
     input rst,
+    input lose,
     
-    output [7:0] seconds
+    output [7:0] seconds,
+    output scoreZero
     
     );
     
     reg [7:0] secCounter = 0;
     reg current_clk = 0;
-    
+    reg tmpscoreZero = 0;
 //    always @ (posedge pause) begin
 //        if(pause == 1)
 //            temp_pause <=1;
@@ -57,6 +59,7 @@ module counter(
             if(clk1Hz) begin
                 if (secCounter == 0) begin
                     secCounter <= 59;
+                    tmpscoreZero <= 1;
                 end else begin
                     secCounter <= secCounter - 1;
                 end
@@ -120,6 +123,7 @@ end
 //	end
 //end
 assign seconds = secCounter;
+assign scoreZero = tmpscoreZero;
    
    
 endmodule
